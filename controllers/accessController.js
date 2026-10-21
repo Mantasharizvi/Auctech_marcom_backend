@@ -50,7 +50,7 @@ const submitSignup = asyncHandler(async (req, res) => {
     name, email, company, password: await bcrypt.hash(password, 10), status: "pending",
   });
   const r = await createRequest("signup", user, req);
-  await notifyAdmin(r);
+  notifyAdmin(r); // not awaited: email must not delay the response
   return sent(res, r, "Sign up request sent. Please wait for admin confirmation.");
 });
 
@@ -67,7 +67,7 @@ const submitLogin = asyncHandler(async (req, res) => {
     return res.status(403).json(new apiResponse(403, null, "Your access request was rejected."));
 
   const r = await createRequest("login", user, req);
-  await notifyAdmin(r);
+  notifyAdmin(r); // not awaited: email must not delay the response
   return sent(res, r, "Login request sent. Please wait for admin confirmation.");
 });
 
@@ -95,7 +95,7 @@ const applyDecision = async (r, action) => {
   if (action === "approve") user.status = "approved";
   else if (r.type === "signup") user.status = "rejected";
   await user.save();
-  await sendEmail(
+  sendEmail( // not awaited: approval must not wait for the email
     user.email,
     action === "approve" ? "Your AUCTECH MARCOM access is approved" : "Your AUCTECH MARCOM request",
     action === "approve"
