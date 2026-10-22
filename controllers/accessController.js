@@ -17,7 +17,7 @@ const decisionLink = (id, action) =>
 const notifyAdmin = async (reqDoc) => {
   const rows = [["Type", reqDoc.type === "signup" ? "Sign up" : "Login"], ["Name", reqDoc.name], ["Email", reqDoc.email], ["Company", reqDoc.company], ["Time", new Date().toLocaleString("en-IN")]]
     .map(([k, v]) => `<tr><td style="padding:6px 14px 6px 0"><b>${k}</b></td><td>${esc(v)}</td></tr>`).join("");
-  await sendEmail(
+   sendEmail(
     process.env.ADMIN_NOTIFY_EMAIL,
     `New ${reqDoc.type} request: ${reqDoc.name} (${reqDoc.company})`,
     `<h3>New ${reqDoc.type} request</h3><table>${rows}</table><p>
